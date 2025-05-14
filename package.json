@@ -1,0 +1,46 @@
+{
+  "name": "cnility",
+  "version": "1.0.0",
+  "description": "K&R 2E =====",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "gyp-configure": "node-gyp configure -- -f compile_commands_json",
+    "gyp-build": "node-gyp configure build",
+    "gyp-build-with-compile_commands_json": "node-gyp configure -- -f compile_commands_json",
+    "gyp-get-compile_commands": "cp ./build/Release/compile_commands.json ./",
+    "gyp-lsp-populate": "npm run gyp-build-with-compile_commands_json && npm run gyp-get-compile_commands",
+    "compile": "node-gyp rebuild",
+    "make-build-dir": "mkdir -p ./.build",
+    "clean-build-dir": "rm -rf ./.build",
+    "copy-kandr": "cp -r ./src/kandr ./.build",
+    "start": "node ./.build/app.js",
+    "start-dev": "nodemon --watch ./.build ./.build/app.js",
+    "pre-build": "npm run make-build-dir && npm run copy-kandr",
+    "build": "npm run pre-build && tsc",
+    "dev": "npm run build && concurrently \"tsc --watch\"  \"npm run start-dev\""
+  },
+  "gypfile": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cragady/cnility.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cragady/cnility/issues"
+  },
+  "homepage": "https://github.com/Cragady/cnility#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.15.17",
+    "concurrently": "^9.1.2",
+    "node-addon-api": "^8.3.1",
+    "node-gyp": "^11.2.0",
+    "nodemon": "^3.1.10",
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,7 @@
+pdf2htmlEX
+.idea/
+node_modules/
+.build/
+build/
+*.node
+.cache/
