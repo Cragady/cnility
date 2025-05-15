@@ -1,7 +1,7 @@
 import path from 'path';
 import { Router, Request, Response, NextFunction } from 'express';
 import apiRoutes from './api';
-import viewRoutes from './view';
+import viewRoutes from './views';
 import { getContext } from '../util';
 
 const router = Router();

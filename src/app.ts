@@ -15,6 +15,7 @@ testExtensions();
 express.urlencoded({ limit: '200mb', extended: true });
 app.use(express.json({ limit: '200mb' }));
 app.use(express.static(path.join(__dirname, './kandr')));
+app.use(express.static(path.join(__dirname, './static')));
 
 // API & View
 app.use(routes);

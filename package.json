@@ -14,9 +14,12 @@
     "make-build-dir": "mkdir -p ./.build",
     "clean-build-dir": "rm -rf ./.build",
     "copy-kandr": "cp -r ./src/kandr ./.build",
+    "copy-views": "cp -r ./src/views ./.build",
+    "copy-static": "mkdir -p ./.build/static && cp -r ./src/static ./.build",
+    "copy-assets": "npm run copy-kandr && npm run copy-views && npm run copy-static",
     "start": "node ./.build/app.js",
     "start-dev": "nodemon --watch ./.build ./.build/app.js",
-    "pre-build": "npm run make-build-dir && npm run copy-kandr",
+    "pre-build": "npm run make-build-dir && npm run copy-assets",
     "build": "npm run pre-build && tsc",
     "dev": "npm run build && concurrently \"tsc --watch\"  \"npm run start-dev\""
   },

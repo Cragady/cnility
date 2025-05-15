@@ -5,3 +5,6 @@ node_modules/
 build/
 *.node
 .cache/
+
+src/kandr-parsed/*
+!src/kandr-parsed/README.md

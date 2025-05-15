@@ -23,7 +23,12 @@ function calculateCharDistance(highChar: String = '', lowChar: String = 'L'):
   return charDist;
 }
 
-module.exports = {
+function nullTerminateString(str: String = '') {
+  return str + '\0';
+}
+
+export {
   getMaxAllowedCharValue,
   calculateCharDistance,
-};
+  nullTerminateString,
+}
