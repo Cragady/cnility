@@ -1,36 +1,23 @@
-import express, { NextFunction, Request, Response } from 'express';
-import { createRequire } from 'module';
+import express from 'express';
 
 import path from 'path';
-import { hello, hello2 } from './extensions';
+import { testExtensions } from './util';
+import routes from './routes';
 
-
-const DEBUG = false;
+process.env.DEBUG = 'false';
+process.env.ROOT_DIR = __dirname;
 
 const app = express();
 const port = 3000;
 
-console.log(hello.hello());
-console.log(hello2.hello());
-console.log('setting static files');
-express.urlencoded({extended: true});
-app.use(express.json());
+testExtensions();
+
+express.urlencoded({ limit: '200mb', extended: true });
+app.use(express.json({ limit: '200mb' }));
 app.use(express.static(path.join(__dirname, './kandr')));
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, DoopDerp! <3');
-});
-
-app.get('/kandr', (req: Request, res: Response, next: NextFunction) => {
-  const fileRootPath = path.join(__dirname, './kandr');
-  res.sendFile('kandr.html', { root: fileRootPath }, (err: Error) => {
-    if (err) {
-      next(err);
-    } else {
-      if (DEBUG) console.log('File sent');
-    }
-  });
-});
+// API & View
+app.use(routes);
 
 app.listen(port, () => {
   // 🙉
