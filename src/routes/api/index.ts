@@ -1,9 +1,8 @@
 import { Router } from 'express';
+import testNative from './test_native'
 
 const router = Router();
 
-// const user = require('./user');
-
-// router.use('/user', user);
+router.use('/test_native', testNative);
 
 export default router;
