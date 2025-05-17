@@ -89,6 +89,8 @@ void FileConversion::ParseThree() {
     std::cout << _char_buff[2] << std::endl;
   }
 
+  // for 'P' in a certain scenario: -18, -104, -79
+
   // std::cout << _char_buff[0] << " ";
   // std::cout << _char_buff[1] << " ";
   // std::cout << _char_buff[2];
