@@ -1,5 +1,5 @@
-async function testNativeClickHandler(e) {
-  const res = await fetch('/api/test_native');
+async function basicFetch(path) {
+  const res = await fetch(path);
   const data = await res.json();
   if (res.status != 200) {
     console.error(data);
@@ -9,4 +9,14 @@ async function testNativeClickHandler(e) {
   console.log(data);
 }
 
-test_native_support?.addEventListener('click', testNativeClickHandler);
+async function basicFetchClickHandler(e) {
+  const targetPath = e?.target?.dataset?.fetchPath || '';
+  if (targetPath === '') {
+    console.error("No data fetch path for element!");
+    return;
+  }
+  await basicFetch(targetPath);
+}
+
+test_native_support?.addEventListener('click', basicFetchClickHandler);
+convert_kandr_chars?.addEventListener('click', basicFetchClickHandler);

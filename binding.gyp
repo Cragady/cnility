@@ -42,6 +42,32 @@
         #   'destination': './src/extensions/hello2'
         # },
       ]
-    }
+    },
+    {
+      'target_name': 'file_conversion',
+      'sources': [
+        'src/extensions/file_conversion/conversion.cpp',
+        'src/extensions/file_conversion/FileConversion.cpp',
+      ],
+      'dependencies': [
+        "<!(node -p \"require('node-addon-api').targets\"):node_addon_api_except_all",
+      ],
+      'includes': [ 'common.gypi' ]
+    },
+    {
+      'target_name': 'file_conversion_post_build',
+      'type': 'none',
+      'dependencies': ['file_conversion'],
+      'copies': [
+        {
+          'files': ['<(PRODUCT_DIR)/file_conversion.node'],
+          'destination': './.build/extensions/file_conversion'
+        },
+        # {
+        #   'files': ['<(PRODUCT_DIR)/file_conversion.node'],
+        #   'destination': './src/extensions/file_conversion'
+        # },
+      ]
+    },
   ]
 }
