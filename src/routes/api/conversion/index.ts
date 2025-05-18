@@ -22,12 +22,12 @@ router.route('/')
         if (fileType.toLowerCase() !== 'html') return;
         filesParsed++;
         // TODO: get rid of conditional
-        // if (fileParts[1] === TEST_PAGE_NAME) {
+        if (fileParts[1] === TEST_PAGE_NAME) {
           // TODO: parse file with native node
           const fileName = path.join(file.parentPath, file.name);
           const fileWrite = path.join(PARSED_DIR, file.name);
           fileConversion.ParseFile(fileName, fileWrite, calculateCharDistance(), getMaxAllowedCharValue());
-        // }
+        }
       });
       console.log(`${filesParsed} files parsed.`);
       console.log(`Parsing finished. New files placed in: ${PARSED_DIR}`);

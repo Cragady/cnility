@@ -24,28 +24,18 @@ void FileConversion::LoopFile() {
     char c;
     while (_file_data.get(c)) {
       if ((ull)c > _max_char_distance) {
-        // std::cout << (long long)c << " ";
-        bool buff_added = BuffNumber((ll)c);
-        if (buff_added) {
+        std::cout << (ll)(unsigned char)c << " ";
+        bool buff_added = BuffNumber(c);
+        if (buff_added && _buff_pos <= 2) {
           continue;
         }
         _buff_pos = 0;
         ParseThree();
-        BuffNumber((ll)c);
+        // BuffNumber(c);
         continue;
-        // three big ass numbers per char
-        // 18446744073709551598
-        // 18446744073709551512
-        // 18446744073709551537
-        // std::cout << (ull)c << ": ";
-        // c = (ull)c - _char_distance;
-        // std::cout << (ull)c << " ";
-        // 18446744073709551598
-        // break;
       }
-      // std::cout << c;
     }
-    // std::cout << "\n" << std::endl;
+    std::cout << "\n" << std::endl;
     _file_data.close();
     return;
   }
@@ -53,7 +43,7 @@ void FileConversion::LoopFile() {
   std::cerr << "Unable to open file" << std::endl;
 }
 
-bool FileConversion::BuffNumber(ll num) {
+bool FileConversion::BuffNumber(char num) {
   if (_buff_pos > _buff_size - 1) return false;
   _char_buff[_buff_pos] = num;
   _buff_pos++;
@@ -61,42 +51,27 @@ bool FileConversion::BuffNumber(ll num) {
 }
 
 void FileConversion::ParseThree() {
-  char c;
-  long long num = _char_buff[2];
-  // for (size_t i = 0; i < _buff_size; i++) {
-  //   num += _char_buff[i] - _char_portion_distance;
-  // }
+  uint32_t target_num = ParseThreeByte8(_char_buff);
 
-  ll pos1 = _char_buff[0];
-  ll pos2 = _char_buff[1];
-  ll pos3 = _char_buff[2];
-  bool ok = true;
+  // TODO: correct the below to include a larget amount of the glyph table
+  // Also of note: there are custom glyphs on this font that don't *appear*
+  // to be in the unicode table
+  target_num -= _char_distance;
 
-  if (pos1 == -18) {
+  std::cout << (char)target_num << std::endl;;
 
-    if (pos2 != -104 && pos2 != -103) {
-      ok = false;
-      std::cout << "Non standard second index num" << std::endl;
-    }
-  } else {
-    ok = false;
-    std::cout << "\n\nNON -18 NUM IN FIRST POS" << std::endl;
+}
+
+uint32_t FileConversion::ParseThreeByte8(const char *str) {
+  unsigned char *bytes = (unsigned char *)str;
+
+
+  // NOTE: 3-byte UTF-8 parsing. We don't need to cover other byte cases since
+  // the font table doesn't really go lower than 3 bytes
+  if ((bytes[0] & 0xf0) == 0xe0) {
+    return ((bytes[0] & 0x0f) << 12) |
+      ((bytes[1] & 0x3f) << 6) |
+      (bytes[2] & 0x3F);
   }
-  if (!ok) {
-    std::cout << _file_name << std::endl;
-    std::cout << _char_buff[0] << " ";
-    std::cout << _char_buff[1] << " ";
-    std::cout << _char_buff[2] << std::endl;
-  }
-
-  // for 'P' in a certain scenario: -18, -104, -79
-
-  // std::cout << _char_buff[0] << " ";
-  // std::cout << _char_buff[1] << " ";
-  // std::cout << _char_buff[2];
-  // std::cout << std::endl;
-  // The below currently prints PREFACE with setup
-  // num -= (long long)_char_distance;
-  // std::cout << (char)num << " ";
-
+  return 0;
 }
