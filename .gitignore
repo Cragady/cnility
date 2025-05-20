@@ -6,5 +6,7 @@ build/
 *.node
 .cache/
 
+venv/
+
 src/kandr-parsed/*
 !src/kandr-parsed/README.md

@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 // TODO:
 import { fileConversion } from '../../../extensions';
-import { getMaxAllowedCharValue, calculateCharDistance } from '../../../conversion';
+import { nullTerminateString } from '../../../conversion';
 
 const router = Router();
 
@@ -24,9 +24,9 @@ router.route('/')
         // TODO: get rid of conditional
         if (fileParts[1] === TEST_PAGE_NAME) {
           // TODO: parse file with native node
-          const fileName = path.join(file.parentPath, file.name);
-          const fileWrite = path.join(PARSED_DIR, file.name);
-          fileConversion.ParseFile(fileName, fileWrite, calculateCharDistance(), getMaxAllowedCharValue());
+          const fileName = nullTerminateString(path.join(file.parentPath, file.name));
+          const fileWrite = nullTerminateString(path.join(PARSED_DIR, file.name));
+          fileConversion.ParseFile(fileName, fileWrite);
         }
       });
       console.log(`${filesParsed} files parsed.`);

@@ -5,9 +5,18 @@
 #include <fstream>
 #include <string>
 
+#define BUFF_MAX 4
+
 typedef unsigned long long ull;
 typedef long long ll;
 typedef unsigned char uc;
+
+enum class UTFByteType {
+  One,
+  Two,
+  Three,
+  Four,
+};
 
 class FileConversion {
 private:
@@ -15,20 +24,28 @@ private:
   std::string _destination;
   std::ifstream _file_data;
   ll _char_distance = 58849;
-  ull _max_char_distance;
-  size_t _buff_size = 3;
-  char _char_buff[3];
+  size_t _buff_size = 0;
+  char _char_buff[BUFF_MAX];
+  char _converted_char;
   size_t _buff_pos = 0;
+
+  UTFByteType _byte_type = UTFByteType::One;
 public:
   bool write_file = false;
 
-  FileConversion(std::string file_name, std::string destination, ull char_distance, ull max_char_distance);
+  FileConversion(std::string file_name, std::string destination);
 
   void LogValues();
   void LoopFile();
   bool BuffNumber(char num);
-  void ParseThree();
-  uint32_t ParseThreeByte8(const char *str);
+  bool ParseOutNum();
+  uint32_t ParseMultiByte();
+  bool CheckLeadingUTF8Char(char c);
+  bool CheckContinuationByte(char c);
+  void ResetByteValues();
+  void ResetCharBuff();
+  void SetBuffSize(size_t size);
+  void LogByteInfo();
 };
 
 #endif
