@@ -1,6 +1,7 @@
-#ifndef EXTENSIONS_CHAR_CONVERSION_CHAR_CONVERSION_HPP_
-#define EXTENSIONS_CHAR_CONVERSION_CHAR_CONVERSION_HPP_
+#ifndef EXTENSIONS_FILE_CONVERSION_FILE_CONVERSION_HPP_
+#define EXTENSIONS_FILE_CONVERSION_FILE_CONVERSION_HPP_
 
+#include "CharNumCorrection.hpp"
 #include <cstdint>
 #include <fstream>
 #include <string>
@@ -23,11 +24,12 @@ private:
   std::string _file_name;
   std::string _destination;
   std::ifstream _file_data;
-  ll _char_distance = 58849;
   size_t _buff_size = 0;
   char _char_buff[BUFF_MAX];
-  char _converted_char;
+  size_t _chars_parsed = 0;
   size_t _buff_pos = 0;
+
+  CharNumCorrection _char_corrector;
 
   UTFByteType _byte_type = UTFByteType::One;
 public:
@@ -39,13 +41,13 @@ public:
   void LoopFile();
   bool BuffNumber(char num);
   bool ParseOutNum();
-  uint32_t ParseMultiByte();
   bool CheckLeadingUTF8Char(char c);
   bool CheckContinuationByte(char c);
   void ResetByteValues();
   void ResetCharBuff();
   void SetBuffSize(size_t size);
   void LogByteInfo();
+  void LogCharacterInfo();
 };
 
 #endif

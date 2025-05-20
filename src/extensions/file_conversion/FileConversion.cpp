@@ -5,6 +5,7 @@
 #include <cstdio>
 
 #include "FileConversion.hpp"
+#include "utf8_utils.hpp"
 
 FileConversion::FileConversion(std::string file_name, std::string destination) {
   _file_name = file_name;
@@ -15,27 +16,49 @@ FileConversion::FileConversion(std::string file_name, std::string destination) {
 void FileConversion::LogValues() {
   std::cout << "_file_name: " << _file_name << std::endl;
   std::cout << "_destination: " << _destination << std::endl;
-  std::cout << "_char_distance: " << _char_distance << std::endl;
 }
 
 void FileConversion::LoopFile() {
-  if (_file_data.is_open()) {
-    char c;
-    while (_file_data.get(c)) {
-      bool is_multi_byte = CheckLeadingUTF8Char(c);
-      if (is_multi_byte) {
-        bool buff_added = BuffNumber(c);
-        if (!buff_added) continue;
-        bool parsed = ParseOutNum();
-        if (parsed) ResetByteValues();
-      }
-    }
-    std::cout << "\n" << std::endl;
-    _file_data.close();
+  if (!_file_data.is_open()) {
+    std::cerr << "Unable to open file" << std::endl;
     return;
   }
 
-  std::cerr << "Unable to open file" << std::endl;
+  char c;
+  size_t prev_chars_parsed = 0;
+  bool should_log = false;
+  while (_file_data.get(c)) {
+    prev_chars_parsed = _chars_parsed;
+    bool is_multi_byte = CheckLeadingUTF8Char(c);
+    if (is_multi_byte) {
+      bool buff_added = BuffNumber(c);
+      if (!buff_added) continue;
+      bool parsed = ParseOutNum();
+      if (parsed) {
+        ResetByteValues();
+        _chars_parsed++;
+      }
+    } else {
+      _chars_parsed++;
+    }
+
+    // if(prev_chars_parsed != _chars_parsed) {
+    //   if (_char_corrector.char_to_convert == 0xe66d ||
+    //     _char_corrector.char_to_convert == 0xe66e ||
+    //     _char_corrector.char_to_convert == 0xe70f ||
+    //     _char_corrector.char_to_convert == 0xe710
+    //   ) {
+    //     should_log = true;
+    //     LogCharacterInfo();
+    //   }
+    // }
+    should_log = true;
+
+    _char_corrector.char_to_convert = 0;
+  }
+  if (should_log) std::cout << "\n" << std::endl;
+  _file_data.close();
+
 }
 
 bool FileConversion::BuffNumber(char num) {
@@ -54,13 +77,9 @@ bool FileConversion::ParseOutNum() {
   // NOTE: _buff_pos will be incremented to the _buff_size on the last possible
   // successful addition, so we do a direct comparison
   if (_buff_pos != _buff_size) return false;
-  uint32_t target_num = ParseMultiByte();
 
-  // TODO: correct the below to include a larget amount of the glyph table
-  // Also of note: there are custom glyphs on this font that don't *appear*
-  // to be in the unicode table
-  target_num -= _char_distance;
-  _converted_char = (char)target_num;
+  _char_corrector.char_to_convert = utf8_utils::parse_utf8(_char_buff, _buff_size);
+  _char_corrector.Conversion();
 
   LogByteInfo();
 
@@ -91,22 +110,6 @@ bool FileConversion::CheckContinuationByte(char c) {
   return (c & 0xc0) == 0x80;
 }
 
-uint32_t FileConversion::ParseMultiByte() {
-  unsigned char *bytes = (unsigned char *)_char_buff;
-
-  uint32_t num = 0;
-  for (size_t i = 0; i < _buff_size; i++) {
-    int clear_bit = 0x3f;
-    int offset = (_buff_size - 1) * 6 - i * 6;
-    if (i == 0) {
-      clear_bit = 0x0f;
-    }
-    num |= ((bytes[i] & clear_bit) << offset);
-  }
-
-  return num;
-}
-
 void FileConversion::ResetByteValues() {
   _byte_type = UTFByteType::One;
   ResetCharBuff();
@@ -131,5 +134,13 @@ void FileConversion::LogByteInfo() {
     char c = _char_buff[i];
     if (c) std::cout << std::setw(5) << (int)_char_buff[i];
   }
-  std::cout << " | " << _converted_char << std::endl;
+  std::cout << " | " << _char_corrector.correction << std::endl;
+}
+
+void FileConversion::LogCharacterInfo() {
+  std::cout << "\n-----------" << std::endl;
+  std::cout << "Char Num: " << _char_corrector.char_to_convert << " - " << std::hex << _char_corrector.char_to_convert << std::dec << std::endl;
+  std::cout << "File Loc: " << _file_name << std::endl;
+  std::cout << "Num of Chars: " << _chars_parsed << std::endl;
+  std::cout << "-----------\n" << std::endl;
 }

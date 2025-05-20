@@ -48,6 +48,8 @@
       'sources': [
         'src/extensions/file_conversion/conversion.cpp',
         'src/extensions/file_conversion/FileConversion.cpp',
+        'src/extensions/file_conversion/CharNumCorrection.cpp',
+        'src/extensions/file_conversion/utf8_utils.cpp',
       ],
       'dependencies': [
         "<!(node -p \"require('node-addon-api').targets\"):node_addon_api_except_all",
