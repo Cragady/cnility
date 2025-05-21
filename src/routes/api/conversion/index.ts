@@ -9,7 +9,9 @@ const router = Router();
 
 const KANDR_PATH = path.join(__dirname, '../../../kandr');
 const PARSED_DIR = path.join(__dirname, '../../../../src/kandr-parsed');
-const TEST_PAGE_NAME = 'page10';
+// const TEST_PAGE_NAME = 'page10';
+// const TEST_PAGE_NAME = 'page56';
+const TEST_PAGE_NAME = 'page65';
 
 router.route('/')
   .get((req: Request, res: Response, next: NextFunction) => {
@@ -22,12 +24,12 @@ router.route('/')
         if (fileType.toLowerCase() !== 'html') return;
         filesParsed++;
         // TODO: get rid of conditional
-        if (fileParts[1] === TEST_PAGE_NAME) {
+        // if (fileParts[1] === TEST_PAGE_NAME) {
           // TODO: parse file with native node
           const fileName = nullTerminateString(path.join(file.parentPath, file.name));
           const fileWrite = nullTerminateString(path.join(PARSED_DIR, file.name));
           fileConversion.ParseFile(fileName, fileWrite);
-        }
+        // }
       });
       console.log(`${filesParsed} files parsed.`);
       console.log(`Parsing finished. New files placed in: ${PARSED_DIR}`);

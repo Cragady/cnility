@@ -6,12 +6,15 @@
 #include "utf8_utils.hpp"
 
 bool CharNumCorrection::BasicConversion() {
-  if (char_to_convert >= _char_specials) return false;
+  if (char_to_convert >= _char_specials || char_to_convert <= _chars_start) return false;
   char_correction = char_to_convert - _char_distance;
   return true;
 }
 
-bool CharNumCorrection::SpecialCaseConversion() {
+bool CharNumCorrection::SpecialCaseConversion(bool log_case) {
+  bool converted = false;
+  size_t pos = 0;
+
   switch (char_to_convert) {
     case 0xe669:
       char_correction = utf8_utils::parse_utf8_us("“"); // u+201c
@@ -37,39 +40,72 @@ bool CharNumCorrection::SpecialCaseConversion() {
     case 0xe6a6:
       char_correction = utf8_utils::parse_utf8_us("×"); // u+00d7
       return true;
-    // TODO: implement
+    // TODO: verify that glyphs for the uncovered cases are just kerning for
+    // the font
     // fi, fl, ff, and ffi is in the `Alphabetic Presentation Forms` in the unicode table
     case 0xe66d: // fi
+      if (log_case) std::cout << "f portions" << std::endl;
+      correction[pos++] = 'f';
+      correction[pos++] = 'i';
+      correction[pos] = '\0';
+      uncovered_case = true;
       break;
     case 0xe66e: // fl
+      if (log_case) std::cout << "f portions" << std::endl;
+      correction[pos++] = 'f';
+      correction[pos++] = 'l';
+      correction[pos] = '\0';
+      uncovered_case = true;
       break;
     case 0xe70f: // ff
+      if (log_case) std::cout << "f portions" << std::endl;
+      correction[pos++] = 'f';
+      correction[pos++] = 'f';
+      correction[pos] = '\0';
+      uncovered_case = true;
       break;
     case 0xe710: // ffi
+      if (log_case) std::cout << "f portions" << std::endl;
+      log_out = true;
+      correction[pos++] = 'f';
+      correction[pos++] = 'f';
+      correction[pos++] = 'i';
+      correction[pos] = '\0';
+      uncovered_case = true;
       break;
     default:
-      return false;
+      // NOTE: we pass through regularly encoded utf-8 here.
+      char_correction = char_to_convert;
+      converted = true;
+      break;
   }
 
-  // TODO: Parse second set of `A-Z` here maybe?
   if (char_to_convert >= 0xe717 && char_to_convert <= 0xe72f) {
-    // basic parse with override?
+    // TODO: maybe wrap these in a span to preserve font sizing
+    char_correction = char_to_convert - _char_special_capitals_distance;
+    converted = true;
   }
 
-  return false;
+  return converted;
 }
 
 void CharNumCorrection::Conversion() {
   ZeroString();
   parse_success = BasicConversion();
   if (!parse_success) parse_success = SpecialCaseConversion();
-  if (!parse_success) return;
+  if (!parse_success || uncovered_case) return;
 
+  CheckForHTML();
   UnUtf();
+  EscapeHTML();
 }
 
 void CharNumCorrection::ZeroString() {
-  for (size_t i = 0; i < CHAR_CONVERSION_BUFF_SIZE; i++) {
+  uncovered_case = false;
+  needs_escape_sequence = false;
+  log_out = false;
+  char_correction = 0;
+  for (size_t i = 0; i < CHAR_CONVERSION_BUFF_MAX_SIZE; i++) {
     correction[i] = '\0';
   }
 }
@@ -96,7 +132,8 @@ void CharNumCorrection::UnUtf() {
   uint32_t cont_byte_clear = 0x80;
 
   while (byte_copy) {
-    byte_arr[byte_arr_len++] = (byte_copy & 0x3f) | cont_byte_clear;
+    uint32_t byte_correction = (byte_copy & 0x3f) | cont_byte_clear;
+    byte_arr[byte_arr_len++] = byte_correction;
     byte_copy >>= 6;
   }
 
@@ -108,5 +145,22 @@ void CharNumCorrection::UnUtf() {
     correction[i] = (char)byte_arr[byte_arr_len - 1];
   }
 
-  correction[CHAR_CONVERSION_BUFF_SIZE - 1] = '\0';
+}
+
+void CharNumCorrection::CheckForHTML() {
+  if (
+    char_correction == '<' ||
+    char_correction == '>' ||
+    char_correction == '&' ||
+    char_correction == '"' ||
+    char_correction == '\'' ||
+    char_correction == '`'
+  ) {
+    needs_escape_sequence = true;
+  }
+}
+
+void CharNumCorrection::EscapeHTML() {
+  if (!needs_escape_sequence) return;
+  utf8_utils::sanitize_utf8_for_html(correction, CHAR_CONVERSION_BUFF_MAX_SIZE);
 }

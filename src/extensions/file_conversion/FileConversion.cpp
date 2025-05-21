@@ -25,10 +25,7 @@ void FileConversion::LoopFile() {
   }
 
   char c;
-  size_t prev_chars_parsed = 0;
-  bool should_log = false;
   while (_file_data.get(c)) {
-    prev_chars_parsed = _chars_parsed;
     bool is_multi_byte = CheckLeadingUTF8Char(c);
     if (is_multi_byte) {
       bool buff_added = BuffNumber(c);
@@ -37,26 +34,15 @@ void FileConversion::LoopFile() {
       if (parsed) {
         ResetByteValues();
         _chars_parsed++;
+        LogCharStream();
       }
     } else {
+      LogCharStream(c);
       _chars_parsed++;
     }
 
-    // if(prev_chars_parsed != _chars_parsed) {
-    //   if (_char_corrector.char_to_convert == 0xe66d ||
-    //     _char_corrector.char_to_convert == 0xe66e ||
-    //     _char_corrector.char_to_convert == 0xe70f ||
-    //     _char_corrector.char_to_convert == 0xe710
-    //   ) {
-    //     should_log = true;
-    //     LogCharacterInfo();
-    //   }
-    // }
-    should_log = true;
-
     _char_corrector.char_to_convert = 0;
   }
-  if (should_log) std::cout << "\n" << std::endl;
   _file_data.close();
 
 }
@@ -81,7 +67,11 @@ bool FileConversion::ParseOutNum() {
   _char_corrector.char_to_convert = utf8_utils::parse_utf8(_char_buff, _buff_size);
   _char_corrector.Conversion();
 
-  LogByteInfo();
+  // LogByteInfo();
+  if (_char_corrector.log_out) {
+    LogByteInfo();
+    LogCharacterInfo();
+  }
 
   return true;
 }
@@ -137,10 +127,24 @@ void FileConversion::LogByteInfo() {
   std::cout << " | " << _char_corrector.correction << std::endl;
 }
 
+void FileConversion::LogRegularCharInWidthOfInfo(char c) {
+  std::cout << std::left;
+  if (c) std::cout << std::setw(15) << " " << " | " << c << std::endl;
+}
+
 void FileConversion::LogCharacterInfo() {
   std::cout << "\n-----------" << std::endl;
   std::cout << "Char Num: " << _char_corrector.char_to_convert << " - " << std::hex << _char_corrector.char_to_convert << std::dec << std::endl;
   std::cout << "File Loc: " << _file_name << std::endl;
   std::cout << "Num of Chars: " << _chars_parsed << std::endl;
   std::cout << "-----------\n" << std::endl;
+}
+
+void FileConversion::LogCharStream(char c) {
+  if (!_log_char_stream) return;
+  if (c == (char)NULL) {
+    std::cout << _char_corrector.correction;
+    return;
+  }
+  std::cout << c;
 }

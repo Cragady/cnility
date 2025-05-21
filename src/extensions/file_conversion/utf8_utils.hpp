@@ -8,6 +8,7 @@ namespace utf8_utils {
 
 uint32_t parse_utf8(const char *str, size_t size);
 uint32_t parse_utf8_us(const char *str);
+void sanitize_utf8_for_html(char *str, size_t max_len);
 
 } // namespace utf8_utils
 

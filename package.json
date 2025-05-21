@@ -28,7 +28,9 @@
     "build": "npm run pre-build && tsc",
     "dev-build": "npm run pre-dev-build && tsc",
     "clean-build": "rm -rf ./.build",
-    "dev": "npm run dev-build && concurrently \"tsc --watch\"  \"npm run start-dev\""
+    "dev": "npm run dev-build && concurrently \"tsc --watch\"  \"npm run start-dev\"",
+    "dev-c": "npm run compile && npm run dev",
+    "dev-bc": "npm run compile && npm run dev-build && npm run start-dev"
   },
   "gypfile": true,
   "repository": {

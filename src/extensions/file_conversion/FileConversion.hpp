@@ -28,6 +28,7 @@ private:
   char _char_buff[BUFF_MAX];
   size_t _chars_parsed = 0;
   size_t _buff_pos = 0;
+  bool _log_char_stream = false;
 
   CharNumCorrection _char_corrector;
 
@@ -48,6 +49,8 @@ public:
   void SetBuffSize(size_t size);
   void LogByteInfo();
   void LogCharacterInfo();
+  void LogRegularCharInWidthOfInfo(char c);
+  void LogCharStream(char c = (char)NULL);
 };
 
 #endif
