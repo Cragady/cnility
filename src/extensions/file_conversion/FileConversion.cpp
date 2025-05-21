@@ -35,14 +35,19 @@ void FileConversion::LoopFile() {
         ResetByteValues();
         _chars_parsed++;
         LogCharStream();
+        ConvertCharStream();
       }
     } else {
       LogCharStream(c);
+      ConvertCharStream(c);
       _chars_parsed++;
     }
 
     _char_corrector.char_to_convert = 0;
   }
+
+  WriteToFile();
+
   _file_data.close();
 
 }
@@ -68,10 +73,10 @@ bool FileConversion::ParseOutNum() {
   _char_corrector.Conversion();
 
   // LogByteInfo();
-  if (_char_corrector.log_out) {
-    LogByteInfo();
-    LogCharacterInfo();
-  }
+  // if (_char_corrector.log_out) {
+  //   LogByteInfo();
+  //   LogCharacterInfo();
+  // }
 
   return true;
 }
@@ -147,4 +152,23 @@ void FileConversion::LogCharStream(char c) {
     return;
   }
   std::cout << c;
+}
+
+void FileConversion::ConvertCharStream(char c) {
+  if (c == (char)NULL) {
+    _converted_file_data += _char_corrector.correction;
+    return;
+  }
+  _converted_file_data += c;
+}
+
+void FileConversion::WriteToFile() {
+  std::ofstream out_file(_destination);
+  if (!out_file.is_open()) {
+    std::cerr << "Unable to write to destination file! " << _destination << std::endl;
+    return;
+  }
+
+  out_file << _converted_file_data << std::endl;
+  out_file.close();
 }

@@ -23,6 +23,7 @@ class FileConversion {
 private:
   std::string _file_name;
   std::string _destination;
+  std::string _converted_file_data;
   std::ifstream _file_data;
   size_t _buff_size = 0;
   char _char_buff[BUFF_MAX];
@@ -51,6 +52,8 @@ public:
   void LogCharacterInfo();
   void LogRegularCharInWidthOfInfo(char c);
   void LogCharStream(char c = (char)NULL);
+  void ConvertCharStream(char c = (char)NULL);
+  void WriteToFile();
 };
 
 #endif

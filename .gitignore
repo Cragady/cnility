@@ -10,3 +10,6 @@ venv/
 
 src/kandr-parsed/*
 !src/kandr-parsed/README.md
+
+src/kandr/parsed/*
+!src/kandr/parsed/README.md

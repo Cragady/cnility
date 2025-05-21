@@ -5,10 +5,10 @@ import { getContext } from '../../util';
 
 const router = Router();
 
-router.route('/')
-  .get((req: Request, res: Response, next: NextFunction) => {
+function basicGet(filePath: string) {
+  return (req: Request, res: Response, next: NextFunction) => {
     const { ROOT_DIR, DEBUG } = getContext();
-    const fileRootPath = path.join(ROOT_DIR, './kandr');
+    const fileRootPath = path.join(ROOT_DIR, filePath);
 
     res.sendFile('kandr.html', { root: fileRootPath }, (err: Error) => {
       if (err) {
@@ -18,7 +18,14 @@ router.route('/')
       }
 
     });
-  });
+  }
+}
+
+router.route('/')
+  .get(basicGet('./kandr'));
+
+router.route('/parsed')
+  .get(basicGet('./kandr/parsed'));
 
 
 export default router;
