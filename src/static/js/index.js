@@ -20,3 +20,7 @@ async function basicFetchClickHandler(e) {
 
 test_native_support?.addEventListener('click', basicFetchClickHandler);
 convert_kandr_chars?.addEventListener('click', basicFetchClickHandler);
+log_kandr_files?.addEventListener('click', basicFetchClickHandler);
+log_kandr_parsed_files?.addEventListener('click', basicFetchClickHandler);
+log_kandr_longest?.addEventListener('click', basicFetchClickHandler);
+log_kandr_parsed_longest?.addEventListener('click', basicFetchClickHandler);
