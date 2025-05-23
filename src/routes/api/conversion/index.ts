@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 // TODO:
 import { fileConversion } from '../../../extensions';
-import { nullTerminateString } from '../../../conversion';
+import { badPngPhotoArr, nullTerminateString } from '../../../conversion';
 
 const router = Router();
 
@@ -47,6 +47,13 @@ function rootGet() {
               fileBuffer = fileBuffer.replace(/url\(/g, 'url(/parsed/');
               fs.writeFileSync(fileWrite, fileBuffer, { encoding: 'utf-8' });
             } else {
+              const nameStub = file.name
+                .replace('bg', '')
+                .replace('.png', '');
+              if (fileType.toLowerCase() === 'png') {
+                const nameNum = parseInt(nameStub, 16);
+                if (badPngPhotoArr.includes(nameNum)) return;
+              }
               fs.copyFileSync(fileName, fileWrite);
             }
           } catch (err) {
@@ -73,8 +80,15 @@ function rootGet() {
           }
         } else {
           try {
+            const fileNumString = file.name.replace(/[A-Za-z.]/g, '');
+            const fileNum = parseInt(fileNumString);
             fileBuffer = fileBuffer
               .replace(/bg.*\.png/g, '/parsed/$&');
+
+            if (badPngPhotoArr.includes(fileNum)) {
+              fileBuffer = fileBuffer
+                .replace(/<img.*?\/>/g, '');
+            }
           } catch (err: any) {
             console.error('An error occurred in replacing bg photos: ', err);
           }
