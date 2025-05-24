@@ -13,6 +13,11 @@ enum class WoffSignature : uint32_t {
   wOF2 = 0x774F4632,
 };
 
+enum class SfntVersion : uint32_t {
+  TTF = 0x00010000,
+  CFF = 0x4F54544F,
+};
+
 // NOTE: no inheritance to keep EXACT control over data placement and alignment
 // NOTE: leaving off signature to avoid having to 'reset' files
 
@@ -104,7 +109,7 @@ public:
   void WFUncompress(const WOFFTableDirectoryEntry &table, std::vector<char> &compressed_data);
   void ProcessUncompressed(const WOFFTableDirectoryEntry &table, std::vector<char> &uncompressed_data);
   void ProcessCompressed(const WOFFTableDirectoryEntry &table, std::vector<char> &compressed_data);
-
+  void ProcessGeneric(const WOFFTableDirectoryEntry &table, std::vector<char> &generic_data);
 };
 
 

@@ -13,6 +13,8 @@ const PARSED_DIR = path.join(__dirname, '../../../../src/kandr/parsed');
 // const TEST_PAGE_NAME = 'page56';
 const TEST_PAGE_NAME = 'page65';
 
+const BAD_FONT = 'f2.woff';
+
 router.route('/')
   .get(rootGet());
 
@@ -168,10 +170,19 @@ function parseWoffs() {
         const fileType = fileParts[fileParts.length - 1];
 
         if (fileType.toLowerCase() !== 'woff') return;
+        // NOTE: use the following when actually reading, parsing, and re-writing
+        // the font file
+        // if (file.name.toLowerCase() !== BAD_FONT) return;
 
         const fileName = nullTerminateString(path.join(file.parentPath, file.name));
         const fileWrite = nullTerminateString(path.join(PARSED_DIR, file.name));
 
+        // NOTE: only f2.woff and f3.woff includes invalid/private-use unicode
+        // f3.woff includes a private use kerning character italicized
+        // `fi` - 0xe66d
+        // NOTE: f2.woff includes valid glyphs, but at wrong positions that the
+        // file converter takes care of. Also has a set of 'small' capital letters
+        // that should probably be extracted into its own font file
         try {
           console.log(`Parsing woff file: ${file.name}`);
           fileConversion.ParseWoff(fileName, fileWrite);

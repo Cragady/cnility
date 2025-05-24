@@ -36,6 +36,14 @@ Or put it wherever. The world is your oyster.
 * `pdf2htmlEX`
   * https://github.com/pdf2htmlEX/pdf2htmlEX
 
+## POST RAGTUX
+
+Unfortunately, we don't have the LaTeX source for this PDF, but this project is meant to alleviate the lack of a LaTeX source by parsing out the PDF to readable HTML.
+
+There is likely a text source somewhere else out there, but as I've stated previously, this is a project that is an exercise of curiosity. I may attempt to read the PDF directly as a nightmare mode challenge if I'm feeling super up to it.
+
+Anything past this point in the README was written by `ragtux`.
+
 K&R 2E
 =====
 

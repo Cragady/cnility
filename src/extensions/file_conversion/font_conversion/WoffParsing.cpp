@@ -1,6 +1,8 @@
 #include "WoffParsing.hpp"
 #include "Endian.hpp"
+#include "OTTTF.hpp"
 #include "zconf.h"
+#include "StringRunner.hpp"
 
 #include <cstdint>
 #include <fstream>
@@ -91,6 +93,21 @@ void WOFFParser::ByteSwapTableDir(WOFFTableDirectoryEntry &table) {
 
 
 void WOFFParser::ReadTables() {
+  // std::cout << "flavor: " << woff1.header.flavor << std::endl;
+  std::cout << "Num tables: " << woff1.header.num_tables << std::endl;
+  switch (woff1.header.flavor) {
+    case (uint32_t)SfntVersion::TTF:
+      std::cout << "TTF Flavor of SFNT Version!!!!" << std::endl;
+      break;
+    case (uint32_t)SfntVersion::CFF:
+      std::cout << "CFF Flavor of SFNT Version!!!!" << std::endl;
+      break;
+    default:
+      std::cout << "No flavor detected" << std::endl;
+      std::cout << "\tFLAVOR |: Num: " << woff1.header.flavor << std::hex << " | Hex: " << woff1.header.flavor << std::dec << std::endl;
+      break;
+  }
+  std::cout << std::endl;
   /*
     std::vector<char> fontData(header.totalSfntSize);
     file.seekg(sizeof(WOFFHeader));
@@ -152,15 +169,24 @@ void WOFFParser::WFUncompress(const WOFFTableDirectoryEntry &table, std::vector<
 }
 
 void WOFFParser::ProcessUncompressed(const WOFFTableDirectoryEntry &table, std::vector<char> &uncompressed_data) {
-  // process
-  // std::cout << uncompressed_data.data() << std::endl;
-  std::string str(uncompressed_data.begin(), uncompressed_data.end());
-  std::cout << str << std::endl;
+  ProcessGeneric(table, uncompressed_data);
 }
 
 void WOFFParser::ProcessCompressed(const WOFFTableDirectoryEntry &table, std::vector<char> &compressed_data) {
-  // process
+  ProcessGeneric(table, compressed_data);
+}
+
+void WOFFParser::ProcessGeneric(const WOFFTableDirectoryEntry &table, std::vector<char> &generic_data) {
   // std::cout << compressed_data.data() << std::endl;
-  std::string str(compressed_data.begin(), compressed_data.end());
-  std::cout << str << std::endl;
+  std::string str(generic_data.begin(), generic_data.end());
+  StringRunner runner(str.c_str());
+  OTTTF type_font;
+  runner.ReadStr(reinterpret_cast<char *>(&type_font.base_header), sizeof(BaseOpenHeader));
+  // type_font.SwapHeaders();
+  // BaseOpenHeader test = type_font.base_header;
+  // std::cout << "\n--------------" << std::endl;
+  // std::cout << "snft_or_scaler: " << test.snft_or_scaler << " | " << std::hex << test.snft_or_scaler << std::dec << std::endl;
+  // std::cout << "num_tables: " << test.num_tables << std::endl;
+  // std::cout << "--------------\n" << std::endl;
+  // runner.LogStr();
 }
