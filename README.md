@@ -1,3 +1,27 @@
+# Overview
+
+I took on this project of extracting HTMl and text from a PDF as an exercise of curiosity.
+
+There's likely better ways to handle what I'm doing in this repo, but I like poking around things like this.
+
+One thing to note: DO NOT PARSE OUT WOFF FILES AS THEY STAND. For some reason, it seems to change the locales or something.
+
+Special characters are printed to the console that will ruin the output. I don't know how to fix this at the moment.
+
+It's sort of like how you can change the terminal colors by printing special characters, and you have to print a reset char to set the color back to normal. It's like that, but with characters instead. It's quite something to look at.
+
+The following is an output of the `ls` command in this repo after printing the WOFF files.
+
+```sh
+51Q┤▒┌␋├≤S▒└⎻┌␊.⎻┼±   README.└␍   R␊⎻┌␋␌▒C⎺┴␊⎼F␋┼▒┌.⎻┼±   ␉␋┼␍␋┼±.±≤⎻   ␉┤␋┌␍   ␌⎺└└⎺┼.±≤⎻␋   ␌⎺└⎻␋┌␊ ␌⎺└└▒┼␍⎽.┘⎽⎺┼   ␌⎺┼┴␊⎼⎽␋⎺┼.⎽␤  '┐&⎼ ┴0⎼▒±├┤│8.⎻␍°'   ┼⎺␍␊ └⎺␍┤┌␊⎽   ┼⎺␍␊└⎺┼.┘⎽⎺┼   ⎻▒␌┐▒±␊-┌⎺␌┐.┘⎽⎺┼   ⎻▒␌┐▒±␊.┘⎽⎺┼   ⎻␍°2␤├└┌EX   ⎽⎼␌   ├⎽␌⎺┼°␋±.┘⎽⎺┼   ┴␊┼┴
+```
+
+Prolly not a huge deal if you do print them, but just thought I'd let you know.
+
+Maybe this is my lack of experience with working with fonts on a low level leaking through. Maybe this is obvious to more seasoned programmers: don't print font files maybe?
+
+What I do know about these fonts though, is they transform three-bytes utf-8 sequences. This is the reason behind `FileConversion.cpp` in the first place: to read the three-byte utf-8 sequence and transform it back into a normal utf-8 sequence. The next step for this repo is to read the WOFF files and apply similar transforms there. There may be a need for another font, or it could be as simple as changing the font size on certain characters. I'm unsure, but the WOFF files have a different set of glyphs for A-Z for some reason. Likely just for sizing.
+
 K&R 2E
 =====
 
