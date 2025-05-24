@@ -26,7 +26,7 @@ What I do know about these fonts though, is they transform three-bytes utf-8 seq
 
 Right now, these are notable dependencies due to them needing to be excluded from git tracking or vendoring into the project.
 
-Just make sure `zlib` is in your system somehow. e.g. On Ubuntu: `sudo apt-get install zlib` if needed.
+Just make sure `zlib` is in your system somehow. e.g. On Ubuntu: `sudo apt-get install zlib1g` (or whatever it is) if needed.
 
 For `pdf2htmlEX` grab the appropriate binary from their releases page and put it in the project's dir following `.gitignore`'s nomenclature.
 
