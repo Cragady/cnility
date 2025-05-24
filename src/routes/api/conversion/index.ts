@@ -28,6 +28,9 @@ router.route('/log-kandr-parsed-files')
 router.route('/parsed-longest')
   .get(logLongestKandrFile(PARSED_DIR));
 
+router.route('/parse-woffs')
+  .get(parseWoffs());
+
 function rootGet() {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -148,6 +151,39 @@ function logLongestKandrFile(path: string) {
       });
       console.log(`Longest char count: ${longestName.length} | Longest name: ${longestName}`);
       res.json({ status: 'Data Read: Ok', data: { length: longestName.length, name: longestName, longestArr } });
+    } catch (err: any) {
+      console.error(err);
+      res.status(500).json({ status: 500, message: err.message });
+    }
+  }
+}
+
+function parseWoffs() {
+  return (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const files = fs.readdirSync(KANDR_PATH, { withFileTypes: true });
+      files.forEach((file: fs.Dirent<string>) => {
+        if (file.isDirectory()) return;
+        const fileParts = file.name.split('.');
+        const fileType = fileParts[fileParts.length - 1];
+
+        if (fileType.toLowerCase() !== 'woff') return;
+
+        const fileName = nullTerminateString(path.join(file.parentPath, file.name));
+        const fileWrite = nullTerminateString(path.join(PARSED_DIR, file.name));
+
+        try {
+          console.log(`Parsing woff file: ${file.name}`);
+          fileConversion.ParseWoff(fileName, fileWrite);
+        } catch (err: any) {
+          console.error(err);
+          return;
+        }
+        return;
+
+      });
+      console.log("WOFF Parsing finished!");
+      res.json({ status: 200, msg: 'Data Read: OK' }).status(200);
     } catch (err: any) {
       console.error(err);
       res.status(500).json({ status: 500, message: err.message });

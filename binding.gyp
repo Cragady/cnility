@@ -48,6 +48,8 @@
       'sources': [
         'src/extensions/file_conversion/conversion.cpp',
         'src/extensions/file_conversion/FileConversion.cpp',
+        'src/extensions/file_conversion/font_conversion/WoffParsing.cpp',
+        'src/extensions/file_conversion/font_conversion/Endian.cpp',
         'src/extensions/file_conversion/CharNumCorrection.cpp',
         'src/extensions/file_conversion/utf8_utils.cpp',
       ],

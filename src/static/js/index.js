@@ -24,3 +24,4 @@ log_kandr_files?.addEventListener('click', basicFetchClickHandler);
 log_kandr_parsed_files?.addEventListener('click', basicFetchClickHandler);
 log_kandr_longest?.addEventListener('click', basicFetchClickHandler);
 log_kandr_parsed_longest?.addEventListener('click', basicFetchClickHandler);
+parse_woffs?.addEventListener('click', basicFetchClickHandler);
