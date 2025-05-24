@@ -16,7 +16,7 @@ The following is an output of the `ls` command in this repo after printing the W
 51Q┤▒┌␋├≤S▒└⎻┌␊.⎻┼±   README.└␍   R␊⎻┌␋␌▒C⎺┴␊⎼F␋┼▒┌.⎻┼±   ␉␋┼␍␋┼±.±≤⎻   ␉┤␋┌␍   ␌⎺└└⎺┼.±≤⎻␋   ␌⎺└⎻␋┌␊ ␌⎺└└▒┼␍⎽.┘⎽⎺┼   ␌⎺┼┴␊⎼⎽␋⎺┼.⎽␤  '┐&⎼ ┴0⎼▒±├┤│8.⎻␍°'   ┼⎺␍␊ └⎺␍┤┌␊⎽   ┼⎺␍␊└⎺┼.┘⎽⎺┼   ⎻▒␌┐▒±␊-┌⎺␌┐.┘⎽⎺┼   ⎻▒␌┐▒±␊.┘⎽⎺┼   ⎻␍°2␤├└┌EX   ⎽⎼␌   ├⎽␌⎺┼°␋±.┘⎽⎺┼   ┴␊┼┴
 ```
 
-Prolly not a huge deal if you do print them, but just thought I'd let you know.
+Prolly not a huge deal if you do print them, but just thought I'd let you know. A cheeky `reset` seems to fix the problem.
 
 Maybe this is my lack of experience with working with fonts on a low level leaking through. Maybe this is obvious to more seasoned programmers: don't print font files maybe?
 
