@@ -1,6 +1,6 @@
 # Overview
 
-I took on this project of extracting HTMl and text from a PDF as an exercise of curiosity.
+I took on this project of extracting HTML and text from a PDF as an exercise of curiosity.
 
 There's likely better ways to handle what I'm doing in this repo, but I like poking around things like this.
 
