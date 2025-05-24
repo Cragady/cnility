@@ -22,6 +22,20 @@ Maybe this is my lack of experience with working with fonts on a low level leaki
 
 What I do know about these fonts though, is they transform three-bytes utf-8 sequences. This is the reason behind `FileConversion.cpp` in the first place: to read the three-byte utf-8 sequence and transform it back into a normal utf-8 sequence. The next step for this repo is to read the WOFF files and apply similar transforms there. There may be a need for another font, or it could be as simple as changing the font size on certain characters. I'm unsure, but the WOFF files have a different set of glyphs for A-Z for some reason. Likely just for sizing.
 
+## Dependencies
+
+Right now, these are notable dependencies due to them needing to be excluded from git tracking or vendoring into the project.
+
+Just make sure `zlib` is in your system somehow. e.g. On Ubuntu: `sudo apt-get install zlib` if needed.
+
+For `pdf2htmlEX` grab the appropriate binary from their releases page and put it in the project's dir following `.gitignore`'s nomenclature.
+
+Or put it wherever. The world is your oyster.
+
+* `zlib`
+* `pdf2htmlEX`
+  * https://github.com/pdf2htmlEX/pdf2htmlEX
+
 K&R 2E
 =====
 
