@@ -24,10 +24,10 @@ struct CmapEncodingSubtable {
 // platform identifier and then by platform-specific identifier.
 
 enum class CmapPlatforms {
-  Unicode,
-  Macintosh,
-  RESERVED_DO_NOT_USE,
-  Microsoft,
+  Unicode, // Indicates Unicode Version.
+  Macintosh, // QuickDraw Script Manager code.
+  RESERVED_DO_NOT_USE, // (reserved; do not use)
+  Microsoft, // Microsoft encoding.
 };
 
 enum class PlatformSpecificIdCode_Unicode {
@@ -41,7 +41,40 @@ enum class PlatformSpecificIdCode_Unicode {
 };
 
 enum class PlatformSpecificIdCode_Macintosh {
-  CURRENTY_DISCOURAGED_IF_IDS_NEEDED_VISIT_URL_IN_COMMENT_BELOW = 9999,
+  Roman = 0,
+  Japanese,
+  Traditional_Chinese,
+  Korean,
+  Arabic,
+  Hebrew,
+  Greek,
+  Russian,
+  RSymbol,
+  Devanagari,
+  Gurmukhi,
+  Gujarati,
+  Oriya,
+  Bengali,
+  Tamil,
+  Telugu,
+  Kannada,
+  Malayalam,
+  Sinhalese,
+  Burmese,
+  Khmer,
+  Thai,
+  Laotian,
+  Georgian,
+  Armenian,
+  Simplified_Chinese,
+  Tibetan,
+  Mongolian,
+  Geez,
+  Slavic,
+  Vietnamese,
+  Sindhi,
+  UNINTERPRETED,
+  MACINTOSH_CURRENTY_DISCOURAGED_IF_INFO_NEEDED_VISIT_URL_IN_COMMENT_BELOW = 9999,
   // https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6name.html
 };
 
