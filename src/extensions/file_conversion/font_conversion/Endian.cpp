@@ -14,6 +14,8 @@ Endian::Endian(EndianOrder target_arg) {
   } else {
     host = EndianOrder::Big;
   }
+
+  should_reverse = target != host;
 }
 
 uint16_t Endian::Swap16(uint16_t bytes) {

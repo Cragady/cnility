@@ -1,6 +1,8 @@
 #include "WoffParsing.hpp"
 #include "Endian.hpp"
 #include "OTTTF.hpp"
+#include "tables/Cmap.hpp"
+#include "tables/tables.hpp"
 #include "zconf.h"
 #include "StringRunner.hpp"
 
@@ -94,20 +96,20 @@ void WOFFParser::ByteSwapTableDir(WOFFTableDirectoryEntry &table) {
 
 void WOFFParser::ReadTables() {
   // std::cout << "flavor: " << woff1.header.flavor << std::endl;
-  std::cout << "Num tables: " << woff1.header.num_tables << std::endl;
-  switch (woff1.header.flavor) {
-    case (uint32_t)SfntVersion::TTF:
-      std::cout << "TTF Flavor of SFNT Version!!!!" << std::endl;
-      break;
-    case (uint32_t)SfntVersion::CFF:
-      std::cout << "CFF Flavor of SFNT Version!!!!" << std::endl;
-      break;
-    default:
-      std::cout << "No flavor detected" << std::endl;
-      std::cout << "\tFLAVOR |: Num: " << woff1.header.flavor << std::hex << " | Hex: " << woff1.header.flavor << std::dec << std::endl;
-      break;
-  }
-  std::cout << std::endl;
+  // std::cout << "Num tables: " << woff1.header.num_tables << std::endl;
+  // switch (woff1.header.flavor) {
+  //   case (uint32_t)SfntVersion::TTF:
+  //     std::cout << "TTF Flavor of SFNT Version!!!!" << std::endl;
+  //     break;
+  //   case (uint32_t)SfntVersion::CFF:
+  //     std::cout << "CFF Flavor of SFNT Version!!!!" << std::endl;
+  //     break;
+  //   default:
+  //     std::cout << "No flavor detected" << std::endl;
+  //     std::cout << "\tFLAVOR |: Num: " << woff1.header.flavor << std::hex << " | Hex: " << woff1.header.flavor << std::dec << std::endl;
+  //     break;
+  // }
+  // std::cout << std::endl;
   /*
     std::vector<char> fontData(header.totalSfntSize);
     file.seekg(sizeof(WOFFHeader));
@@ -177,16 +179,61 @@ void WOFFParser::ProcessCompressed(const WOFFTableDirectoryEntry &table, std::ve
 }
 
 void WOFFParser::ProcessGeneric(const WOFFTableDirectoryEntry &table, std::vector<char> &generic_data) {
-  // std::cout << compressed_data.data() << std::endl;
+  // std::cout << generic_data.data() << std::endl;
   std::string str(generic_data.begin(), generic_data.end());
-  StringRunner runner(str.c_str());
-  OTTTF type_font;
-  runner.ReadStr(reinterpret_cast<char *>(&type_font.base_header), sizeof(BaseOpenHeader));
+  StringRunner runner(str);
+  runner.SetTag(table.tag);
+  // OTTTF type_font;
+  // runner.ReadStrStatic(reinterpret_cast<char *>(&type_font.base_header), sizeof(BaseOpenHeader));
+  // WARN: runner now swaps bytes for you, don't do this yourself
   // type_font.SwapHeaders();
   // BaseOpenHeader test = type_font.base_header;
-  // std::cout << "\n--------------" << std::endl;
-  // std::cout << "snft_or_scaler: " << test.snft_or_scaler << " | " << std::hex << test.snft_or_scaler << std::dec << std::endl;
-  // std::cout << "num_tables: " << test.num_tables << std::endl;
-  // std::cout << "--------------\n" << std::endl;
-  // runner.LogStr();
+
+  // std::cout << "\n------------------" << std::endl;
+  // std::cout << "tag: " << runner.tag << " | dec: " << table.tag << std::hex << " | hex: " << table.tag << std::dec << std::endl;
+  // std::cout << "Bytes of Table: " << str.size() << std::endl;
+  // std::cout << "Other lengths: " << table.comp_length << " | " << table.orig_length << std::endl;
+  // // std::cout << "snft_or_scaler: " << test.snft_or_scaler << " | " << std::hex << test.snft_or_scaler << std::dec << std::endl;
+  // // std::cout << "num_tables: " << test.num_tables << std::endl;
+  // std::cout << "------------------\n" << std::endl;
+  // // runner.LogStr();
+  switch (table.tag) {
+    case (uint32_t)TTFTables::cmap:
+      table.orig_length;
+      table.offset;
+      table.comp_length;
+      table.orig_checksum;
+
+      CmapIndex test_index;
+      bool allow_read_rev = true;
+      runner.ReadStr(reinterpret_cast<char *>(&test_index.version), sizeof(CmapIndex::version), allow_read_rev);
+      runner.ReadStr(reinterpret_cast<char *>(&test_index.number_sub_tables), sizeof(CmapIndex::number_sub_tables), allow_read_rev);
+      std::vector<CmapEncodingSubtable> subtables(test_index.number_sub_tables);
+      runner.ReadStr(reinterpret_cast<char *>(subtables.data()), sizeof(CmapEncodingSubtable) * test_index.number_sub_tables);
+      for (auto &subtable : subtables) {
+        subtable.platform_id = swapper.Swap16(subtable.platform_id);
+        subtable.platform_specific_id = swapper.Swap16(subtable.platform_specific_id);
+        subtable.offset = swapper.Swap32(subtable.offset);
+
+        std::cout << "Platform_id: " << subtable.platform_id << std::endl;
+        std::cout << "platform_specific_id: " << subtable.platform_specific_id << std::endl;
+        std::cout << "offset: " << subtable.offset << std::endl;
+      }
+      if (test_index.version != 0) {
+        std::cerr << "ERROR IN PARSING CMAP TABLE INFO" << std::endl;
+      }
+      // CmapFormat format;
+      // runner.ReadStr(reinterpret_cast<char *>(&format.format), sizeof(CmapFormat));
+      // std::cout << "format: " << format.format << std::endl;
+      // std::cout << "legnth: " << table.orig_length << std::endl;
+      // std::vector<CmapEncodingSubtable> subtable_directory(test_index.number_sub_tables);
+      // runner.ReadStr(reinterpret_cast<char *>(subtable_directory.data()), sizeof(CmapEncodingSubtable) * test_index.number_sub_tables);
+      // runner.PlacePos(0);
+      // if (format.format == 4) {
+      //   std::cout << "cmap version: " << test_index.version << std::endl;
+      //   std::cout << "cmap number_sub_tables: " << test_index.number_sub_tables << std::endl;
+      //   std::cout << "table_len: " << table.orig_length << std::endl;
+      // }
+      break;
+  }
 }

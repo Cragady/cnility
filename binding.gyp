@@ -52,6 +52,7 @@
         'src/extensions/file_conversion/font_conversion/Endian.cpp',
         'src/extensions/file_conversion/font_conversion/StringRunner.cpp',
         'src/extensions/file_conversion/font_conversion/OTTTF.cpp',
+        'src/extensions/file_conversion/font_conversion/tables/tables.cpp',
         'src/extensions/file_conversion/CharNumCorrection.cpp',
         'src/extensions/file_conversion/utf8_utils.cpp',
       ],

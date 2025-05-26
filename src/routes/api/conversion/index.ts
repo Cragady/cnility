@@ -14,6 +14,7 @@ const PARSED_DIR = path.join(__dirname, '../../../../src/kandr/parsed');
 const TEST_PAGE_NAME = 'page65';
 
 const BAD_FONT = 'f2.woff';
+const TEST_FONT = 'f3.woff';
 
 router.route('/')
   .get(rootGet());
@@ -170,6 +171,7 @@ function parseWoffs() {
         const fileType = fileParts[fileParts.length - 1];
 
         if (fileType.toLowerCase() !== 'woff') return;
+        if (file.name.toLowerCase() !== TEST_FONT) return;
         // NOTE: use the following when actually reading, parsing, and re-writing
         // the font file
         // if (file.name.toLowerCase() !== BAD_FONT) return;

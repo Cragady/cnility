@@ -17,6 +17,7 @@ public:
   uint8_t filter_byte = 0xff;
   size_t byte_width = 8;
   size_t num_bytes = 4;
+  bool should_reverse;
 
   Endian(EndianOrder target_arg);
 

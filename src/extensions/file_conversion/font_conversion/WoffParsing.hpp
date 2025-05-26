@@ -58,7 +58,8 @@ struct WOFF2Header {
 };
 
 struct WOFFTableDirectoryEntry {
-  uint32_t tag; // 4-byte sfnt table identifier.
+  uint32_t tag; // 4-byte sfnt table identifier. // NOTE: this is the original type
+  // char tag[4]; // 4-byte sfnt table identifier.
   uint32_t offset; // Offset to the data, from beginning of WOFF file.
   uint32_t comp_length; // Length of the compressed data, excluding padding.
   uint32_t orig_length; // Length of the uncompressed table, excluding padding.
