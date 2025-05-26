@@ -1,6 +1,8 @@
 #ifndef EXTENSIONS_FILE_CONVERSION_FILE_CONVERSION_HPP_
 #define EXTENSIONS_FILE_CONVERSION_FILE_CONVERSION_HPP_
 
+// TODO: Move all things to do with reading UTF to CharNumCorrection
+
 #include "CharNumCorrection.hpp"
 #include <cstdint>
 #include <fstream>

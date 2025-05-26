@@ -14,7 +14,7 @@ const PARSED_DIR = path.join(__dirname, '../../../../src/kandr/parsed');
 const TEST_PAGE_NAME = 'page65';
 
 const BAD_FONT = 'f2.woff';
-const TEST_FONT = 'f3.woff';
+const TEST_FONT = 'f3.woff'; // NOTE: this font also has one glyph that is in the private use area as a kerning glyph
 
 router.route('/')
   .get(rootGet());

@@ -7,6 +7,8 @@
 #include "FileConversion.hpp"
 #include "utf8_utils.hpp"
 
+// TODO: Move all things to do with reading UTF to CharNumCorrection
+
 FileConversion::FileConversion(std::string file_name, std::string destination) {
   _file_name = file_name;
   _file_data = std::ifstream(file_name);
