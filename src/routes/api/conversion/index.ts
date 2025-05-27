@@ -9,12 +9,13 @@ const router = Router();
 
 const KANDR_PATH = path.join(__dirname, '../../../kandr');
 const PARSED_DIR = path.join(__dirname, '../../../../src/kandr/parsed');
+const FIXED_FONTS_DIR = path.join(__dirname, '../../../../src/fixed_fonts');
 // const TEST_PAGE_NAME = 'page10';
 // const TEST_PAGE_NAME = 'page56';
 const TEST_PAGE_NAME = 'page65';
 
-const BAD_FONT = 'f2.woff';
-const TEST_FONT = 'f3.woff'; // NOTE: this font also has one glyph that is in the private use area as a kerning glyph
+const F2_WOFF = 'f2.woff';
+const F3_WOFF = 'f3.woff'; // NOTE: this font also has one glyph that is in the private use area as a kerning glyph
 
 router.route('/')
   .get(rootGet());
@@ -37,6 +38,7 @@ router.route('/parse-woffs')
 function rootGet() {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
+      copyFixedFonts();
       const files = fs.readdirSync(KANDR_PATH, { withFileTypes: true });
       let filesParsed = 0;
       files.forEach((file: fs.Dirent<string>) => {
@@ -51,6 +53,17 @@ function rootGet() {
             if (file.name.toLowerCase() === 'kandr.css') {
               let fileBuffer = fs.readFileSync(fileName, 'utf-8');
               fileBuffer = fileBuffer.replace(/url\(/g, 'url(/parsed/');
+
+              // TODO: implement replacement(s) for ff2 corrected fonts
+              const FF12_CSS_STR = '@font-face{font-family:ff12;src:url(/parsed/f12.woff)format("woff");}.ff12{font-family:ff12;line-height:0.666000;font-style:normal;font-weight:normal;visibility:visible;}';
+              const FF3_LIGMA_CSS_STR = '@font-face{font-family:ff3_ligma;src:url(/parsed/f3_ligma.woff)format("woff");}.ff3_ligma{font-family:ff3_ligma;line-height:0.931000;font-style:normal;font-weight:normal;visibility:visible;}';
+              let replacementString = '';
+
+              replacementString = FF12_CSS_STR + '\n' + FF3_LIGMA_CSS_STR;
+
+              fileBuffer = fileBuffer
+                .replace(FF12_CSS_STR, replacementString);
+
               fs.writeFileSync(fileWrite, fileBuffer, { encoding: 'utf-8' });
             } else {
               const nameStub = file.name
@@ -86,6 +99,7 @@ function rootGet() {
           }
         } else {
           try {
+            // NOTE: ff2 and ff3 are safe to replace
             const fileNumString = file.name.replace(/[A-Za-z.]/g, '');
             const fileNum = parseInt(fileNumString);
             fileBuffer = fileBuffer
@@ -95,6 +109,10 @@ function rootGet() {
               fileBuffer = fileBuffer
                 .replace(/<img.*?\/>/g, '');
             }
+
+            fileBuffer = fileBuffer.replace(/ff3/g, 'ff3_ligma');
+            // TODO: implement ff2 replacements
+
           } catch (err: any) {
             console.error('An error occurred in replacing bg photos: ', err);
           }
@@ -110,6 +128,20 @@ function rootGet() {
       // next(err);
       res.status(500).json({ status: 500, message: err.message });
     }
+  }
+}
+
+function copyFixedFonts() {
+  try {
+    const files = fs.readdirSync(FIXED_FONTS_DIR, { withFileTypes: true });
+    files.forEach((file: fs.Dirent<string>) => {
+      if (file.isDirectory()) return;
+      const fileName = path.join(file.parentPath, file.name);
+      const fileWrite = path.join(PARSED_DIR, file.name);
+      fs.copyFileSync(fileName, fileWrite);
+    });
+  } catch(err: any) {
+    console.error('Error in copying fixed fonts!\n' + err);
   }
 }
 
@@ -171,10 +203,10 @@ function parseWoffs() {
         const fileType = fileParts[fileParts.length - 1];
 
         if (fileType.toLowerCase() !== 'woff') return;
-        if (file.name.toLowerCase() !== TEST_FONT) return;
+        if (file.name.toLowerCase() !== F3_WOFF) return;
         // NOTE: use the following when actually reading, parsing, and re-writing
         // the font file
-        // if (file.name.toLowerCase() !== BAD_FONT) return;
+        // if (file.name.toLowerCase() !== F2_WOFF) return;
 
         const fileName = nullTerminateString(path.join(file.parentPath, file.name));
         const fileWrite = nullTerminateString(path.join(PARSED_DIR, file.name));
