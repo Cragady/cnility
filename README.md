@@ -22,6 +22,20 @@ Maybe this is my lack of experience with working with fonts on a low level leaki
 
 What I do know about these fonts though, is they transform three-bytes utf-8 sequences. This is the reason behind `FileConversion.cpp` in the first place: to read the three-byte utf-8 sequence and transform it back into a normal utf-8 sequence. The next step for this repo is to read the WOFF files and apply similar transforms there. There may be a need for another font, or it could be as simple as changing the font size on certain characters. I'm unsure, but the WOFF files have a different set of glyphs for A-Z for some reason. Likely just for sizing.
 
+## Usage
+
+You will need to run this on a system where you can `#include <zlib>`. For me, this was Ubuntu under WSL.
+
+* `npm run dev-c # this will compile the C++ and run tsc & nodemon`
+* Go to `localhost:3000`
+* Click on the `Convert Kandr Chars`
+* Visit `localhost:3000/kandr/parsed`
+* OR: Look in `./src/kandr/parsed` to see parsed HTML files
+
+You can verify parsing went correctly by looking in the source of `localhost:3000/kandr/parsed` and seeing readable text in the HTML, unlike `localhost:3000/kandr` which will be a garbled mess most of the time.
+
+There is no need to run pdf2htmlEX since I've already taken care of that step. `conversion.sh` won't help you unless you have the `pdf2htmlEX` binary in this dir to run.
+
 ## Dependencies
 
 Right now, these are notable dependencies due to them needing to be excluded from git tracking or vendoring into the project.
@@ -44,9 +58,11 @@ As of right now, the conversion is complete. I still need to go through and see 
 // TODO: verify layouts and sizings - see if needs fixing
 // TODO: look for patterns in HTML and parse the data out to a digestible format
 // TODO: parse previously mentioned digestible data into HTML
+// TODO: verify ligatures handled properly
+// TODO: (if wanted) touch up GUI for basic controls
 ```
 
-Instead of parsing the fonts with C++, I've decided to just use FontForge to fix the fonts and add ligatures where necessary. I may make a separate project where I read WOFF, OTF, and/or TTF files with C++ using some of the code I wrote here. I likely won't let JS or TS touch that project.
+Instead of parsing the fonts with C++, I've decided to just use `FontForge` to fix the fonts and add ligatures where necessary. I may make a separate project where I read WOFF, OTF, and/or TTF files with C++ using some of the code I wrote here. I likely won't let JS or TS touch that project.
 
 ## POST RAGTUX
 
