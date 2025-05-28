@@ -36,6 +36,18 @@ Or put it wherever. The world is your oyster.
 * `pdf2htmlEX`
   * https://github.com/pdf2htmlEX/pdf2htmlEX
 
+## Conversion Completed
+
+As of right now, the conversion is complete. I still need to go through and see if layouts and sizing needs fixing.
+
+```c
+// TODO: verify layouts and sizings - see if needs fixing
+// TODO: look for patterns in HTML and parse the data out to a digestible format
+// TODO: parse previously mentioned digestible data into HTML
+```
+
+Instead of parsing the fonts with C++, I've decided to just use FontForge to fix the fonts and add ligatures where necessary. I may make a separate project where I read WOFF, OTF, and/or TTF files with C++ using some of the code I wrote here. I likely won't let JS or TS touch that project.
+
 ## POST RAGTUX
 
 Unfortunately, we don't have the LaTeX source for this PDF, but this project is meant to alleviate the lack of a LaTeX source by parsing out the PDF to readable HTML.
