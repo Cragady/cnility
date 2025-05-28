@@ -56,9 +56,10 @@ As of right now, the conversion is complete. I still need to go through and see 
 
 ```c
 // TODO: verify layouts and sizings - see if needs fixing
+// TODO: verify ligatures handled properly
 // TODO: look for patterns in HTML and parse the data out to a digestible format
 // TODO: parse previously mentioned digestible data into HTML
-// TODO: verify ligatures handled properly
+// TODO: address inherited issues
 // TODO: (if wanted) touch up GUI for basic controls
 ```
 
