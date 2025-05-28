@@ -84,7 +84,6 @@ bool CharNumCorrection::SpecialCaseConversion(bool log_case) {
   // egrep "doopderp[A-Z]{1}" ./* -o | wc -l # 153 matches
   // egrep "doopderp[A-Z]{1}" ./* -l | wc -l # three files
   if (char_to_convert >= 0xe717 && char_to_convert <= 0xe72f) {
-    // TODO: maybe wrap these in a span to preserve font sizing
     char_correction = char_to_convert - _char_special_capitals_distance;
     correction[pos++] = 'c';
     correction[pos++] = 'a';

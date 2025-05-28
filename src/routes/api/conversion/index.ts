@@ -102,8 +102,7 @@ function rootGet() {
           return;
         }
         filesParsed++;
-        // TODO: fix fonts and spacing - The conversion undoes a lot of heavy
-        // lifting that the crazy ass font takes care of
+        // TODO: fix spacing and formatting
         const fileNamePass = nullTerminateString(fileName);
         const fileWritePass = nullTerminateString(fileWrite);
         fileConversion.ParseFile(fileNamePass, fileWritePass);
