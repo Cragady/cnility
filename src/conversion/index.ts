@@ -1,3 +1,5 @@
+import { BuffersManager } from "./BuffersManager";
+
 function nullTerminateString(str: String = '') {
   return str + '\0';
 }
@@ -212,6 +214,7 @@ const goodPngPhotoArr = [
 ];
 
 export {
+  BuffersManager,
   nullTerminateString,
   badPngPhotoArr,
   goodPngPhotoArr,

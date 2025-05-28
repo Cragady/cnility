@@ -80,10 +80,23 @@ bool CharNumCorrection::SpecialCaseConversion(bool log_case) {
       break;
   }
 
+  // NOTE:
+  // egrep "doopderp[A-Z]{1}" ./* -o | wc -l # 153 matches
+  // egrep "doopderp[A-Z]{1}" ./* -l | wc -l # three files
   if (char_to_convert >= 0xe717 && char_to_convert <= 0xe72f) {
     // TODO: maybe wrap these in a span to preserve font sizing
     char_correction = char_to_convert - _char_special_capitals_distance;
-    converted = true;
+    correction[pos++] = 'c';
+    correction[pos++] = 'a';
+    correction[pos++] = 'p';
+    correction[pos++] = 's';
+    correction[pos++] = 'm';
+    correction[pos++] = 'a';
+    correction[pos++] = 'l';
+    correction[pos++] = 'l';
+    correction[pos++] = (char)char_correction;
+    correction[pos++] = '\0';
+    uncovered_case = true;
   }
 
   return converted;

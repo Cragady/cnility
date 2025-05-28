@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 // TODO:
 import { fileConversion } from '../../../extensions';
-import { badPngPhotoArr, nullTerminateString } from '../../../conversion';
+import { badPngPhotoArr, BuffersManager, nullTerminateString } from '../../../conversion';
 
 const router = Router();
 
@@ -13,6 +13,16 @@ const FIXED_FONTS_DIR = path.join(__dirname, '../../../../src/fixed_fonts');
 // const TEST_PAGE_NAME = 'page10';
 // const TEST_PAGE_NAME = 'page56';
 const TEST_PAGE_NAME = 'page65';
+
+const CAPS_SMALL_FILES = [
+  'kandr.page166.html',
+  'kandr.page170.html',
+  'kandr.page65.html',
+];
+
+const MATCH_LENGTH = 9;
+const MATCHER = /capsmall[A-Z]/;
+const FILTER = 'capsmall';
 
 const F2_WOFF = 'f2.woff';
 const F3_WOFF = 'f3.woff'; // NOTE: this font also has one glyph that is in the private use area as a kerning glyph
@@ -110,9 +120,26 @@ function rootGet() {
                 .replace(/<img.*?\/>/g, '');
             }
 
-            fileBuffer = fileBuffer.replace(/ff3/g, 'ff3_ligma');
             // TODO: implement ff2 replacements
+            // fileBuffer = fileBuffer.replace(/ff2/g, 'ff2_ligma');
+            fileBuffer = fileBuffer.replace(/ff3/g, 'ff3_ligma');
 
+            // NOTE: important for this to be at end
+
+            if (CAPS_SMALL_FILES.includes(file.name.toLowerCase())) {
+              const bufferManager = new BuffersManager({
+                inBuffer: fileBuffer,
+                outFile: '',
+                matchLength: MATCH_LENGTH,
+                matcher: MATCHER,
+                filter: FILTER,
+                textInsertionStart: '<span class="f2_capsmall_ligma">',
+                textInsertionEnd: '</span>',
+                writeToFile: false,
+              });
+
+              fileBuffer = bufferManager.outBuffer;
+            }
           } catch (err: any) {
             console.error('An error occurred in replacing bg photos: ', err);
           }
