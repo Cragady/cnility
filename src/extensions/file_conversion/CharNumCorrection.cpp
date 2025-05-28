@@ -35,7 +35,7 @@ bool CharNumCorrection::SpecialCaseConversion(bool log_case) {
       char_correction = utf8_utils::parse_utf8_us("°"); // u+00b0
       return true;
     case 0xe6a4:
-      char_correction = utf8_utils::parse_utf8_us("-"); // u+002d
+      char_correction = utf8_utils::parse_utf8_us("−"); // u+2212
       return true;
     case 0xe6a6:
       char_correction = utf8_utils::parse_utf8_us("×"); // u+00d7

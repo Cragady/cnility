@@ -64,15 +64,26 @@ function rootGet() {
               let fileBuffer = fs.readFileSync(fileName, 'utf-8');
               fileBuffer = fileBuffer.replace(/url\(/g, 'url(/parsed/');
 
-              // TODO: implement replacement(s) for ff2 corrected fonts
               const FF12_CSS_STR = '@font-face{font-family:ff12;src:url(/parsed/f12.woff)format("woff");}.ff12{font-family:ff12;line-height:0.666000;font-style:normal;font-weight:normal;visibility:visible;}';
+              const FF2_LIGMA_CSS_STR = '@font-face{font-family:ff2_ligma;src:url(/parsed/f2_ligma.woff)format("woff");}.ff2_ligma{font-family:ff2_ligma;line-height:0.931000;font-style:normal;font-weight:normal;visibility:visible;}';
+              const FF2_CAPSMALL_LIGMA_CSS_STR = '@font-face{font-family:ff2_capsmall_ligma;src:url(/parsed/f2_capsmall_ligma.woff)format("woff");}.ff2_capsmall_ligma{font-family:ff2_capsmall_ligma;line-height:0.931000;font-style:normal;font-weight:normal;visibility:visible;}';
               const FF3_LIGMA_CSS_STR = '@font-face{font-family:ff3_ligma;src:url(/parsed/f3_ligma.woff)format("woff");}.ff3_ligma{font-family:ff3_ligma;line-height:0.931000;font-style:normal;font-weight:normal;visibility:visible;}';
               let replacementString = '';
 
-              replacementString = FF12_CSS_STR + '\n' + FF3_LIGMA_CSS_STR;
+              replacementString = FF12_CSS_STR + '\n' + FF2_LIGMA_CSS_STR;
 
               fileBuffer = fileBuffer
                 .replace(FF12_CSS_STR, replacementString);
+
+              replacementString = FF2_LIGMA_CSS_STR + '\n' + FF2_CAPSMALL_LIGMA_CSS_STR;
+
+              fileBuffer = fileBuffer
+                .replace(FF2_LIGMA_CSS_STR, replacementString);
+
+              replacementString = FF2_CAPSMALL_LIGMA_CSS_STR + '\n' + FF3_LIGMA_CSS_STR;
+
+              fileBuffer = fileBuffer
+                .replace(FF2_CAPSMALL_LIGMA_CSS_STR, replacementString);
 
               fs.writeFileSync(fileWrite, fileBuffer, { encoding: 'utf-8' });
             } else {
@@ -120,8 +131,7 @@ function rootGet() {
                 .replace(/<img.*?\/>/g, '');
             }
 
-            // TODO: implement ff2 replacements
-            // fileBuffer = fileBuffer.replace(/ff2/g, 'ff2_ligma');
+            fileBuffer = fileBuffer.replace(/ff2/g, 'ff2_ligma');
             fileBuffer = fileBuffer.replace(/ff3/g, 'ff3_ligma');
 
             // NOTE: important for this to be at end
@@ -133,7 +143,7 @@ function rootGet() {
                 matchLength: MATCH_LENGTH,
                 matcher: MATCHER,
                 filter: FILTER,
-                textInsertionStart: '<span class="f2_capsmall_ligma">',
+                textInsertionStart: '<span class="ff2_capsmall_ligma">',
                 textInsertionEnd: '</span>',
                 writeToFile: false,
               });
